@@ -1,52 +1,69 @@
-//pega o ID formulario sendo "chamado" pelo botão com a classe Submit
-document.getElementById("formulario").addEventListener("submit", cadastrarVeiculo);		/*pega a form e tem o evento que é o click do submit*/
+//pega o ID formulario sendo "chamado" pelo botão com a classe Submit	
 
-//função de cadastro
-function cadastrarVeiculo(e){
-	var modeloVeiculo = document.getElementById("modeloVeiculo").value;		/*pega o valor do campo input modeloVeiculo do HTML*/
-	var placaVeiculo = document.getElementById("placaVeiculo").value;		/*pega o valor do campo input placaVeiculo do HTML*/
-	var time = new Date();
-	
-	if(modeloVeiculo == "" && placaVeiculo == "" || modeloVeiculo == "" || placaVeiculo == "")
-	{
-		window.alert("Campos obrigatórios não preenchidos.");
-	} else {
-	carro = {	/*cria o objeto com os seguintes parametros.*/
-		modelo: modeloVeiculo,
-		placa: placaVeiculo,
-		hora: (time.getHours() < 10 ? '0' : '') + time.getHours(),
-		minutos: (time.getMinutes() < 10 ? '0' : '') + time.getMinutes(),
-		segundos: (time.getSeconds() < 10 ? '0' : '') + time.getSeconds()
+document.getElementById("formulario").addEventListener("submit", qtdArquivo);	/*pega a form e tem o evento que é o click do submit*/
+
+function	criarArrayArquivo(nomeArquivo) {
+	var arrayArquivo = [];
+	for (i = 0; i < nomeArquivo.length; i++)	{ //criar array
+	arrayArquivo.push(nomeArquivo[i]);
 	}
-	if(localStorage.getItem("patio") === null) {	 
-		var carros = [];
-		carros.push(carro);
-		localStorage.setItem("patio", JSON.stringify(carros))
-	} else {
-		var carros = JSON.parse(localStorage.getItem("patio"));
-		carros.push(carro);
-		localStorage.setItem("patio", JSON.stringify(carros));
-	}
-	document.getElementById("modeloVeiculo").value = "";
-	document.getElementById("placaVeiculo").value = "";
-	mostraPatio();
-	}
-	e.preventDefault();	
+	qtdArquivo(nomeArquivo, arrayArquivo);
 }
 
-function apagarVeiculo(placa) {
-	var carros = JSON.parse(localStorage.getItem("patio"));
-	
-	for(var i = 0; i < carros.length; i++) {
-		if(carros[i].placa == placa){
-			carros.splice(i, 1);
+
+function	qtdArquivo(nomeArquivo, arrayArquivo)	{
+	var qtdRodar = document.getElementById("qtdRodar");
+	var qtdTemp = '';
+	var	qtd = '';
+
+	for (i = arrayArquivo.length -2; i > 0; i--)	{
+		if(nomeArquivo[i] != "_") {
+			qtdTemp += nomeArquivo[i];
+		}	else	{
+			break;
 		}
-		localStorage.setItem("patio", JSON.stringify(carros));
 	}
-	mostraPatio();
+
+	for (i = qtdTemp.length -1; i >= 0; i--)	{
+		qtd += qtdTemp[i];
+	}
+
+	qtdRodar.value = qtd;
+	numOsValor(nomeArquivo, arrayArquivo);
 }
 
-function mostraPatio(){
+function	numOsValor(nomeArquivo, arrayArquivo)	{
+	var numOs = document.getElementById("numOs");
+	var os = '';
+
+	for (i = 0; i < nomeArquivo.length; i++)	{
+		if(nomeArquivo[i] != '_')	{
+			os += nomeArquivo[i];
+		}	else	{
+			break;
+		}
+	}
+	numOs.value = os;
+	qtdItens(nomeArquivo, arrayArquivo, os);
+}
+
+function	qtdItens(nomeArquivo, arrayArquivo, os)	{
+	var qtdTemp = 2;
+
+	/*for (i = os.length + 1; i < nomeArquivo.length; i++)	{
+		if(nomeArquivo[i] >= 00 && nomeArquivo[i] <= 99 )	{
+			qtdTemp++;
+		}	else if(nomeArquivo[i] == '_')	{
+			break;
+		}
+	}*/
+	document.getElementById("caminhoArquivo").value = qtdTemp;
+	for (i = 1; i <= qtdTemp; i++)	{
+		document.getElementById("formulario").innerHTML += '<div class="input-group" style="margin-top: 10px;"><label>Qtd. Mont. Item ' + i + ':</label><input type="text" id="numOs" class="form-control-aditional" disabled><span class="input-group-addon" style="opacity: 0%"></span><label>Qtd. Final ' + i + '</label><input type="text" id="qtdRodar" class="form-control-aditional" disabled></div>'
+	}
+}
+
+/*function mostraPatio(){
 	var carros = JSON.parse(localStorage.getItem("patio"));
 	var carrosResultado = document.getElementById("resultado");
 	
@@ -62,4 +79,4 @@ function mostraPatio(){
 									"</td><td>" + hora + "</td>" +
 		'<td><button class="btn btn-danger" onClick="apagarVeiculo(\'' + placa + '\')">Excluir</button></td></tr>';
 	}
-}
+}*/
